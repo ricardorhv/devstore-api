@@ -1,1 +1,1 @@
-[{"id":1,"items":[{"id":1,"name":"Product 1","price":100}]}]
+{"orders":[{"id":1,"items":[{"id":1,"name":"Product 1","price":100}]}]}
