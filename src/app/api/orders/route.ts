@@ -1,45 +1,26 @@
 import fs from 'fs'
 import { z } from 'zod'
 
-export async function GET() {
-  const itemSchema = z.object({
+export async function POST(request: Request) {
+  const productCartSchema = z.object({
     id: z.number(),
-    name: z.string(),
+    title: z.string(),
+    slug: z.string(),
     price: z.number(),
+    image: z.string(),
+    description: z.string(),
+    featured: z.boolean(),
+    shirtSize: z.enum(['P', 'M', 'G', 'GG']),
+    quantity: z.number(),
+    subtotal: z.number(),
   })
 
   const orderSchema = z.object({
-    id: z.number(),
-    items: z.array(itemSchema),
+    cartItems: z.array(productCartSchema),
+    total: z.number(),
   })
 
-  const ordersListSchema = z.object({
-    orders: z.array(orderSchema),
-  })
+  const { cartItems, total } = orderSchema.parse(await request.json())
 
-  const data = fs.readFileSync('./src/app/api/orders/data.json')
-  const { orders } = ordersListSchema.parse(JSON.parse(data.toString()))
-
-  const newOrder = {
-    id: 1,
-    items: [
-      {
-        id: 1,
-        name: 'Product 1',
-        price: 100,
-      },
-    ],
-  }
-
-  orders.push(newOrder)
-
-  fs.writeFile(
-    './src/app/api/orders/data.json',
-    JSON.stringify({ orders }),
-    (err) => {
-      if (err) console.log(err)
-    },
-  )
-
-  return Response.json(orders)
+  return Response.json({ cartItems, total }, { status: 200 })
 }
