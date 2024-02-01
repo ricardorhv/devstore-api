@@ -35,7 +35,7 @@ export async function GET() {
 
   fs.writeFile(
     './src/app/api/orders/data.json',
-    JSON.stringify(orders),
+    JSON.stringify({ orders }),
     (err) => {
       if (err) console.log(err)
     },
