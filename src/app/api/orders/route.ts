@@ -1,7 +1,9 @@
-import fs from 'fs'
 import { z } from 'zod'
+import { headers } from 'next/headers'
 
 export async function POST(request: Request) {
+  const headersList = headers()
+
   const productCartSchema = z.object({
     id: z.number(),
     title: z.string(),
@@ -22,5 +24,11 @@ export async function POST(request: Request) {
 
   const { cartItems, total } = orderSchema.parse(await request.json())
 
-  return Response.json({ cartItems, total }, { status: 200 })
+  return Response.json(
+    { cartItems, total },
+    {
+      status: 200,
+      headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000' },
+    },
+  )
 }
