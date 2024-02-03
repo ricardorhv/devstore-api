@@ -1,9 +1,7 @@
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { headers } from 'next/headers'
 
-export async function POST(request: Request) {
-  const headersList = headers()
-
+export async function POST(request: Request, res: Response) {
   const productCartSchema = z.object({
     id: z.number(),
     title: z.string(),
@@ -22,13 +20,21 @@ export async function POST(request: Request) {
     total: z.number(),
   })
 
-  const { cartItems, total } = orderSchema.parse(await request.json())
+  const orders = orderSchema.parse(await request.json())
 
-  return Response.json(
-    { cartItems, total },
+  if (request.method === 'OPTIONS') {
+    return NextResponse.json(
+      { message: 'Conseguiu' },
+      {
+        status: 200,
+      },
+    )
+  }
+
+  return NextResponse.json(
+    { message: 'Conseguiu' },
     {
       status: 200,
-      headers: { 'Access-Control-Allow-Origin': 'http://localhost:3000' },
     },
   )
 }
